@@ -25,6 +25,11 @@ export default new Router({
                     meta: { title: '自定义图标' }
                 },
                 {
+                    path: '/role',
+                    component: () => import(/* webpackChunkName: "role" */ '../components/page/user/RoleMgr.vue'),
+                    meta: { title: '角色管理' }
+                },
+                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '基础表格' }

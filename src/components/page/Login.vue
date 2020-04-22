@@ -31,9 +31,10 @@
 export default {
     data: function() {
         return {
+            urlLogin: "/login",
             param: {
                 username: 'admin',
-                password: '123123',
+                password: 'admin',
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -45,12 +46,19 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/');
+                    this.$axios.post(this.$rootUrl + this.urlLogin, {username: this.param.username, password: this.param.password})
+                    .then((res) => {
+                        if(res.data.code === "0"){
+                            this.$message.success('登录成功');
+                            localStorage.setItem('ms_username', this.param.username);
+                            this.$router.push('/');
+                        } else {
+                            this.$message.error('登陆失败，请稍后再试');
+                            return false;
+                        }
+                    });
                 } else {
                     this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
                     return false;
                 }
             });

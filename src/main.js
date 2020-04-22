@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
+import axios from "axios";
 import { messages } from './components/common/i18n';
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 // import './assets/css/theme-green/index.css'; // 浅绿色主题
@@ -15,6 +16,8 @@ Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'
 });
+Vue.prototype.$axios = axios;
+Vue.prototype.$rootUrl = "http://dlf.cloud.com:8885/webapi";
 const i18n = new VueI18n({
     locale: 'zh',
     messages
