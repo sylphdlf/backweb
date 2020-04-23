@@ -3,7 +3,8 @@ module.exports = {
     assetsDir: 'static',
     productionSourceMap: false,
     devServer: {
-        disableHostCheck: true
+        disableHostCheck: true,
+        port:80
         // proxy: {
         //     '/api':{
         //         target:'http://jsonplaceholder.typicode.com',
