@@ -17,7 +17,7 @@ Vue.use(ElementUI, {
     size: 'small'
 });
 Vue.prototype.$axios = axios;
-Vue.prototype.$rootUrl = "http://dlf.cloud.com:8885/webapi";
+Vue.prototype.$rootUrl = "http://dlf.cloud.com/webapi";
 const i18n = new VueI18n({
     locale: 'zh',
     messages
