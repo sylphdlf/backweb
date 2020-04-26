@@ -15,27 +15,11 @@
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
-                    <template slot-scope="scope">
-                        <el-image class="table-td-thumb" :src="scope.row.thumb" :preview-src-list="[scope.row.thumb]"/>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
-                    <template slot-scope="scope">
-                        <el-tag :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')">
-                            {{scope.row.state}}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-
-                <el-table-column prop="date" label="注册时间"></el-table-column>
+                <el-table-column type="selection" width="55" align="center"/>
+                <el-table-column prop="id" label="ID" width="55" align="center" hidden/>
+                <el-table-column prop="name" label="角色名称"/>
+                <el-table-column prop="typeName" label="角色类型"/>
+                <el-table-column prop="createTime" label="创建时间" formatter="YYYY-MM-DD hh:mm:ss"/>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -78,8 +62,8 @@ export default {
     name: 'basetable',
     data() {
         return {
+            urlSearch: "/role/queryPage",
             query: {
-                address: '',
                 name: '',
                 pageIndex: 1,
                 pageSize: 10
@@ -99,13 +83,16 @@ export default {
         this.getData();
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
         getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
-            });
+            this.$axios.post(this.$rootUrl + this.urlSearch, this.query)
+                .then((res) => {
+                    if(res.data.code === "0"){
+                        console.log(res.data);
+                        this.tableData = res.data.data.content;
+                    } else {
+                        this.$message.error('查询失败');
+                    }
+                });
         },
         // 触发搜索按钮
         handleSearch() {

@@ -46,7 +46,7 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$axios.post(this.$rootUrl + this.urlLogin, {username: this.param.username, password: this.param.password})
+                    this.$axios.post(this.$rootUrl + this.urlLogin, this.param)
                     .then((res) => {
                         if(res.data.code === "0"){
                             this.$message.success('登录成功');
