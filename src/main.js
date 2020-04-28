@@ -10,6 +10,7 @@ import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
+import moment from 'moment';
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
@@ -18,6 +19,9 @@ Vue.use(ElementUI, {
 });
 Vue.prototype.$axios = axios;
 Vue.prototype.$rootUrl = "http://dlf.cloud.com/webapi";
+Vue.filter("dateTime", function (timeStamp, pattern = 'YYYY-MM-DD HH:mm:ss') {
+    return moment(timeStamp).format(pattern);
+});
 const i18n = new VueI18n({
     locale: 'zh',
     messages
@@ -43,6 +47,24 @@ router.beforeEach((to, from, next) => {
         }
     }
 });
+
+axios.interceptors.response.use(resp => {
+        if(resp.data.code === '-2'){
+            ElementUI.Message({
+                message: '页面超时，稍后返回登录页面',
+                type: 'error'
+            });
+            setTimeout(() => {
+                let routePromise = router.push('/login');
+            }, 2000);
+        }else{
+            return resp;
+        }
+    },
+        error => {
+        return Promise.resolve(error.response);
+    }
+);
 
 new Vue({
     router,

@@ -13,13 +13,20 @@
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="success" icon="el-icon-lx-add" @click="handleAdd">新增角色</el-button>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange">
+            <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
                 <el-table-column type="selection" width="55" align="center"/>
                 <el-table-column prop="id" label="ID" width="55" align="center" hidden/>
                 <el-table-column prop="name" label="角色名称"/>
-                <el-table-column prop="typeName" label="角色类型"/>
-                <el-table-column prop="createTime" label="创建时间" formatter="YYYY-MM-DD hh:mm:ss"/>
+                <el-table-column prop="type" label="角色类型">
+                    <template scope="scope">
+                        <span>{{types[scope.row.type]}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="createTime" label="创建时间" >
+                    <template scope="scope">
+                        <span>{{scope.row.createTime | dateTime}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -42,11 +49,13 @@
         <!-- 弹出框 -->
         <el-dialog :title="title" :visible.sync="editVisible" width="20%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
+                <el-form-item label="角色名称">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item label="类型">
+                    <el-select v-model="form.type">
+                        <el-option v-for="(value,key) in types" :key="value" :value="key" :label="value"/>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -63,6 +72,8 @@ export default {
     data() {
         return {
             urlSearch: "/role/queryPage",
+            urlType: "/role/getTypeMap",
+            urlAddOrEdit: "/role/addOrEdit",
             query: {
                 name: '',
                 pageIndex: 1,
@@ -73,13 +84,19 @@ export default {
             delList: [],
             editVisible: false,
             pageTotal: 0,
-            form: {},
+            form: {
+                id: "",
+                name: "",
+                type: "",
+            },
             idx: -1,
             id: -1,
-            title: ""
+            title: "",
+            types: {}
         };
     },
     created() {
+        this.getTypes();
         this.getData();
     },
     methods: {
@@ -89,6 +106,9 @@ export default {
                     if(res.data.code === "0"){
                         console.log(res.data);
                         this.tableData = res.data.data.content;
+                        this.query.pageIndex = res.data.data.number + 1;
+                        this.query.pageSize = res.data.data.size;
+                        this.pageTotal = res.data.data.totalElements;
                     } else {
                         this.$message.error('查询失败');
                     }
@@ -105,15 +125,11 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
-                .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
-                })
-                .catch(() => {});
-        },
-        // 多选操作
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
+            .then(() => {
+                this.$message.success('删除成功');
+                this.tableData.splice(index, 1);
+            })
+            .catch(() => {});
         },
         delAllSelection() {
             const length = this.multipleSelection.length;
@@ -141,13 +157,32 @@ export default {
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
+            // if(this.form.id === ""){
+                // this.$message.success(`修改第 ${this.idx + 1} 行成功`);
+            // }
+            this.$axios.post(this.$rootUrl + this.urlAddOrEdit, this.form)
+            .then(res => {
+                if(res.data.code === "0"){
+                    this.$message.success("成功");
+                    this.getData();
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            });
+            // this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
+        },
+        getTypes(){
+            this.$axios.post(this.$rootUrl + this.urlType, {})
+            .then((res) => {
+                if(res.data.code === "0"){
+                    this.types = res.data.data;
+                }
+            });
         }
     }
 };
@@ -168,7 +203,7 @@ export default {
 }
 .table {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
 }
 .red {
     color: #ff0000;
