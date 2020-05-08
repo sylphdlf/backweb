@@ -25,6 +25,11 @@ export default new Router({
                     meta: { title: '自定义图标' }
                 },
                 {
+                    path: '/user',
+                    component: () => import(/* webpackChunkName: "role" */ '../components/page/user/UserMgr.vue'),
+                    meta: { title: '用户管理' }
+                },
+                {
                     path: '/role',
                     component: () => import(/* webpackChunkName: "role" */ '../components/page/user/RoleMgr.vue'),
                     meta: { title: '角色管理' }

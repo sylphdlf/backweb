@@ -67,6 +67,10 @@ export default {
                     title: '用户管理',
                     subs: [
                         {
+                            index: 'user',
+                            title: '用户管理'
+                        },
+                        {
                             index: 'role',
                             title: '角色管理'
                         }

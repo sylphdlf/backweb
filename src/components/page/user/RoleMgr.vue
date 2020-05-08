@@ -15,8 +15,8 @@
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
                 <el-table-column type="selection" width="55" align="center"/>
-                <el-table-column prop="name" label="角色名称"/>
-                <el-table-column prop="type" label="角色类型">
+                <el-table-column prop="name" label="名称"/>
+                <el-table-column prop="type" label="类型">
                     <template scope="scope">
                         <span>{{types[scope.row.type]}}</span>
                     </template>
