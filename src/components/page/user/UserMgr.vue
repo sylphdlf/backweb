@@ -15,7 +15,7 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
                 <el-table-column type="selection" width="55" align="center"/>
                 <el-table-column prop="username" label="名称"/>
-                <el-table-column prop="type" label="类型">
+                <el-table-column prop="type" label="注册类型">
                     <template scope="scope">
                         <span>{{types[scope.row.type]}}</span>
                     </template>
@@ -48,11 +48,11 @@
         <el-dialog :title="title" :visible.sync="editVisible" width="20%">
             <el-form ref="form" :model="form" label-width="70px">
                 <el-form-item label="名称">
-                    <el-input v-model="form.name"></el-input>
+                    <el-input v-model="form.username"></el-input>
                 </el-form-item>
                 <el-form-item label="类型">
                     <el-select v-model="form.type">
-                        <el-option v-for="(value,key) in types" :key="value" :value="key" :label="value"/>
+                        <el-option v-for="(value,key) in types" :key="key" :value="value" :label="value"/>
                     </el-select>
                 </el-form-item>
             </el-form>
