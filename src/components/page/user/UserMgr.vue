@@ -16,12 +16,12 @@
                 <el-table-column type="selection" width="55" align="center"/>
                 <el-table-column prop="username" label="名称"/>
                 <el-table-column prop="type" label="注册类型">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <span>{{types[scope.row.type]}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" >
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <span>{{scope.row.createTime | dateTime}}</span>
                     </template>
                 </el-table-column>
