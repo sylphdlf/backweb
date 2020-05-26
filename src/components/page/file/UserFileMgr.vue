@@ -3,21 +3,23 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 用户管理
+                    <i class="el-icon-lx-cascades"></i> 用户文件管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="角色" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="文件名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
                 <el-table-column type="selection" width="55" align="center"/>
-                <el-table-column prop="username" label="名称"/>
-                <el-table-column prop="type" label="注册类型">
+                <el-table-column prop="name" label="文件名"/>
+                <el-table-column prop="suffix" label="格式"/>
+                <el-table-column prop="path" label="相对路径"/>
+                <el-table-column prop="size" label="文件大小">
                     <template slot-scope="scope">
-                        <span>{{types[scope.row.type]}}</span>
+                        <span>{{Math.round(scope.row.size / 1000) + " K"}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" >
@@ -51,8 +53,8 @@
                     <el-input v-model="form.username"></el-input>
                 </el-form-item>
                 <el-form-item label="类型">
-                    <el-select v-model="form.type" value="0">
-                        <el-option v-for="(value,key) in types" :key="key" :value="key" :label="value"/>
+                    <el-select v-model="form.type">
+                        <el-option v-for="(value,key) in types" :key="key" :value="value" :label="value"/>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -69,7 +71,7 @@ export default {
     name: 'basetable',
     data() {
         return {
-            urlSearch: "/user/queryPage",
+            urlSearch: "/file/queryPageForUser",
             urlType: "/user/getTypeMap",
             urlAddOrEdit: "/user/addOrEdit",
             query: {

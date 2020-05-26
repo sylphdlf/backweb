@@ -77,6 +77,21 @@ export default {
                     ]
                 },
                 {
+                    icon: 'el-icon-lx-calendar',
+                    index: '3',
+                    title: '文件管理',
+                    subs: [
+                        {
+                            index: 'file',
+                            title: '文件管理'
+                        },
+                        {
+                            index: 'userFile',
+                            title: '用户文件管理'
+                        }
+                    ]
+                },
+                {
                     icon: 'el-icon-lx-cascades',
                     index: 'table',
                     title: '基础表格'

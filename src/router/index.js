@@ -26,13 +26,23 @@ export default new Router({
                 },
                 {
                     path: '/user',
-                    component: () => import(/* webpackChunkName: "role" */ '../components/page/user/UserMgr.vue'),
+                    component: () => import(/* webpackChunkName: "user" */ '../components/page/user/UserMgr.vue'),
                     meta: { title: '用户管理' }
                 },
                 {
                     path: '/role',
                     component: () => import(/* webpackChunkName: "role" */ '../components/page/user/RoleMgr.vue'),
                     meta: { title: '角色管理' }
+                },
+                {
+                    path: '/file',
+                    component: () => import(/* webpackChunkName: "file" */ '../components/page/file/FileMgr.vue'),
+                    meta: { title: '文件管理' }
+                },
+                {
+                    path: '/userFile',
+                    component: () => import(/* webpackChunkName: "userFile" */ '../components/page/file/UserFileMgr.vue'),
+                    meta: { title: '用户文件管理' }
                 },
                 {
                     path: '/table',
