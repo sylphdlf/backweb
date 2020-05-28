@@ -51,11 +51,11 @@ export default new Router({
                 },
                 {
                     path: '/access',
-                    component: () => import(/* webpackChunkName: "access" */ '../components/page/server/ConfigMgr.vue'),
+                    component: () => import(/* webpackChunkName: "access" */ '../components/page/server/AccessMgr.vue'),
                     meta: { title: '访问记录' }
                 },
                 {
-                    path: '/access',
+                    path: '/health',
                     component: () => import(/* webpackChunkName: "health" */ '../components/page/server/ConfigMgr.vue'),
                     meta: { title: '服务健康' }
                 },
