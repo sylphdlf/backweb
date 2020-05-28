@@ -19,7 +19,7 @@ Vue.use(ElementUI, {
 });
 Vue.prototype.$axios = axios;
 // Vue.prototype.$rootUrl = "http://dlf.cloud.com/webapi";
-Vue.prototype.$rootUrl = "https://kitty163.com/webapi";
+Vue.prototype.$rootUrl = "https://www.kitty163.com/webapi";
 Vue.filter("dateTime", function (timeStamp, pattern = 'YYYY-MM-DD HH:mm:ss') {
     return moment(timeStamp).format(pattern);
 });
