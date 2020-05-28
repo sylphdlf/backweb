@@ -92,6 +92,29 @@ export default {
                     ]
                 },
                 {
+                    icon: 'el-icon-lx-calendar',
+                    index: '4',
+                    title: '服务器管理',
+                    subs: [
+                        {
+                            index: 'config',
+                            title: '配置管理'
+                        },
+                        {
+                            index: 'access',
+                            title: '访问记录'
+                        },
+                        {
+                            index: 'health',
+                            title: '服务健康'
+                        },
+                        {
+                            index: 'logMonitor',
+                            title: '日志监控'
+                        },
+                    ]
+                },
+                {
                     icon: 'el-icon-lx-cascades',
                     index: 'table',
                     title: '基础表格'
@@ -103,7 +126,7 @@ export default {
                 },
                 {
                     icon: 'el-icon-lx-calendar',
-                    index: '3',
+                    index: '100',
                     title: '表单相关',
                     subs: [
                         {
@@ -111,7 +134,7 @@ export default {
                             title: '基本表单'
                         },
                         {
-                            index: '3-2',
+                            index: '100-2',
                             title: '三级菜单',
                             subs: [
                                 {

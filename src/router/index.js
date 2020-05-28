@@ -45,6 +45,26 @@ export default new Router({
                     meta: { title: '用户文件管理' }
                 },
                 {
+                    path: '/config',
+                    component: () => import(/* webpackChunkName: "config" */ '../components/page/server/ConfigMgr.vue'),
+                    meta: { title: '配置管理' }
+                },
+                {
+                    path: '/access',
+                    component: () => import(/* webpackChunkName: "access" */ '../components/page/server/ConfigMgr.vue'),
+                    meta: { title: '访问记录' }
+                },
+                {
+                    path: '/access',
+                    component: () => import(/* webpackChunkName: "health" */ '../components/page/server/ConfigMgr.vue'),
+                    meta: { title: '服务健康' }
+                },
+                {
+                    path: '/logMonitor',
+                    component: () => import(/* webpackChunkName: "logMonitor" */ '../components/page/server/ConfigMgr.vue'),
+                    meta: { title: '日志监控' }
+                },
+                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '基础表格' }

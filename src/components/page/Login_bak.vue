@@ -24,13 +24,6 @@
                 <p class="login-tips">Tips : 用户名和密码随便填。</p>
             </el-form>
         </div>
-        <div class="ms-foot">
-            <span>©2020&nbsp;kitty163&nbsp;</span>
-            <span>&nbsp;(沪)-个人&nbsp;</span>
-            <a href="http://www.beian.miit.gov.cn" target="_blank">
-                <span class="lh s-bottom-recordcode">&nbsp;沪ICP备19032346号-1&nbsp;</span></a>
-            <span class="lh">沪ICP备19032346号</span>
-        </div>
     </div>
 </template>
 
@@ -99,16 +92,6 @@ export default {
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.3);
     overflow: hidden;
-}
-.ms-foot {
-    position: fixed;
-    width: 100%;
-    line-height: 50px;
-    text-align: center;
-    font-size: 10px;
-    color: #fff;
-    bottom: 0;
-    z-index: 1;
 }
 .ms-content {
     padding: 30px 30px;

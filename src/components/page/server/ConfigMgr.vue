@@ -3,25 +3,21 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 文件管理
+                    <i class="el-icon-lx-cascades"></i> 用户管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="文件名称" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="角色" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button type="success" icon="el-icon-lx-add" @click="handleUpload">上传</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
                 <el-table-column type="selection" width="55" align="center"/>
-                <el-table-column prop="orgName" label="原文件名" style="word-break: break-all"/>
-                <el-table-column prop="name" label="文件名"/>
-                <el-table-column prop="suffix" label="格式"/>
-                <el-table-column prop="path" label="相对路径"/>
-                <el-table-column prop="size" label="文件大小">
+                <el-table-column prop="username" label="名称"/>
+                <el-table-column prop="type" label="注册类型">
                     <template slot-scope="scope">
-                        <span>{{Math.round(scope.row.size / 1000) + " K"}}</span>
+                        <span>{{types[scope.row.type]}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" >
@@ -31,7 +27,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-lx-down" @click="handleEdit(scope.$index, scope.row)">下载</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">绑定角色</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -49,12 +45,21 @@
         </div>
 
         <!-- 弹出框 -->
-        <el-dialog :title="title" :visible.sync="dialogVisible" width="30%">
-            <el-upload class="upload-demo" drag :action="urlUpload" multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">文件大小不能超过200M</div>
-            </el-upload>
+        <el-dialog :title="title" :visible.sync="editVisible" width="20%">
+            <el-form ref="form" :model="form" label-width="70px">
+                <el-form-item label="名称">
+                    <el-input v-model="form.username"></el-input>
+                </el-form-item>
+                <el-form-item label="类型">
+                    <el-select v-model="form.type" value="0">
+                        <el-option v-for="(value,key) in types" :key="key" :value="key" :label="value"/>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveEdit">确 定</el-button>
+            </span>
         </el-dialog>
     </div>
 </template>
@@ -64,8 +69,7 @@ export default {
     name: 'basetable',
     data() {
         return {
-            urlSearch: "/file/queryPage",
-            urlUpload: this.$rootUrl + "/file/upload",
+            urlSearch: "/user/queryPage",
             urlType: "/user/getTypeMap",
             urlAddOrEdit: "/user/addOrEdit",
             query: {
@@ -76,7 +80,7 @@ export default {
             tableData: [],
             multipleSelection: [],
             delList: [],
-            dialogVisible: false,
+            editVisible: false,
             pageTotal: 0,
             form: {
                 id: "",
@@ -111,9 +115,6 @@ export default {
         handleSearch() {
             this.$set(this.query, 'pageIndex', 1);
             this.getData();
-        },
-        handleUpload() {
-            this.dialogVisible = true;
         },
         // 删除操作
         handleDelete(index, row) {
