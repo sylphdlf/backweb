@@ -3,23 +3,21 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 用户管理
+                    <i class="el-icon-lx-cascades"></i> 配置管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="角色" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
-                <el-table-column type="selection" width="55" align="center"/>
-                <el-table-column prop="username" label="名称"/>
-                <el-table-column prop="type" label="注册类型">
-                    <template slot-scope="scope">
-                        <span>{{types[scope.row.type]}}</span>
-                    </template>
-                </el-table-column>
+                <el-table-column type="index" width="55" align="center"/>
+                <el-table-column prop="name" label="名称"/>
+                <el-table-column prop="dictKey" label="键"/>
+                <el-table-column prop="dictValue" label="值"/>
                 <el-table-column prop="createTime" label="创建时间" >
                     <template slot-scope="scope">
                         <span>{{scope.row.createTime | dateTime}}</span>
@@ -27,8 +25,9 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">绑定角色</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-s-grid" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-s-grid" @click="handleInfo(scope.$index, scope.row)">子属性</el-button>
+<!--                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
                     </template>
                 </el-table-column>
             </el-table>
@@ -46,14 +45,15 @@
 
         <!-- 弹出框 -->
         <el-dialog :title="title" :visible.sync="editVisible" width="20%">
-            <el-form ref="form" :model="form" label-width="70px">
+            <el-form ref="form" :model="form" label-width="40px">
                 <el-form-item label="名称">
-                    <el-input v-model="form.username"></el-input>
+                    <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="类型">
-                    <el-select v-model="form.type" value="0">
-                        <el-option v-for="(value,key) in types" :key="key" :value="key" :label="value"/>
-                    </el-select>
+                <el-form-item label="键">
+                    <el-input v-model="form.dictKey"></el-input>
+                </el-form-item>
+                <el-form-item label="值">
+                    <el-input v-model="form.dictValue"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -61,40 +61,71 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog title="子属性列表" :visible.sync="tableVisible" width="60%">
+            <div class="handle-box-inner">
+                <el-button type="success" size="mini" icon="el-icon-plus" @click="handleInnerAdd">新增</el-button>
+            </div>
+            <el-table :data="tableDataInner" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
+                <el-table-column type="index" width="55" align="center"/>
+                <el-table-column prop="name" label="名称"/>
+                <el-table-column prop="dictKey" label="键"/>
+                <el-table-column prop="dictValue" label="值"/>
+                <el-table-column prop="createTime" label="创建时间" >
+                    <template slot-scope="scope">
+                        <span>{{scope.row.createTime | dateTime}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="180" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">禁用</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'basetable',
     data() {
         return {
-            urlSearch: "/user/queryPage",
+            urlSearch: "/dict/queryPage",
             urlType: "/user/getTypeMap",
-            urlAddOrEdit: "/user/addOrEdit",
+            urlAddOrEdit: "/dict/addOrEdit",
             query: {
                 name: '',
                 pageIndex: 1,
                 pageSize: 10
             },
+            queryInner: {
+                parentId: '',
+                pageIndex: 1,
+                pageSize: 100
+            },
             tableData: [],
+            tableDataInner: [],
             multipleSelection: [],
             delList: [],
             editVisible: false,
+            tableVisible: false,
             pageTotal: 0,
             form: {
                 id: "",
                 name: "",
-                type: "",
+                dictKey: "",
+                dictValue: "",
+                parentId: ""
             },
             idx: -1,
             id: -1,
+            parentId: "",
             title: "",
             types: {}
         };
     },
     created() {
-        this.getTypes();
         this.getData();
     },
     methods: {
@@ -111,10 +142,28 @@ export default {
                     }
                 });
         },
+        getDataSubs() {
+            this.$axios.post(this.$rootUrl + this.urlSearch, this.queryInner)
+                .then((res) => {
+                    if(res.data.code === "0"){
+                        this.tableDataInner = res.data.data.content;
+                    } else {
+                        this.$message.error('查询失败');
+                    }
+                });
+        },
         // 触发搜索按钮
         handleSearch() {
             this.$set(this.query, 'pageIndex', 1);
             this.getData();
+        },
+        handleInfo(index, row){
+            this.tableVisible = true;
+            this.title = "子属性列表";
+            this.parentId = row.id;
+            this.queryInner.parentId = this.parentId;
+            this.queryInner.pageSize = 100;
+            this.getDataSubs();
         },
         // 删除操作
         handleDelete(index, row) {
@@ -148,8 +197,16 @@ export default {
             this.title = "新增";
             this.editVisible = true;
         },
-        saveAdd(){
-
+        handleInnerAdd(){
+            this.form = {};
+            this.form.parentId = this.parentId;
+            this.title = "新增子属性";
+            this.editVisible = true;
+        },
+        handleInnerEdit(index, row){
+            this.idx = index;
+            this.form = row;
+            this.editVisible = true;
         },
         // 保存编辑
         saveEdit() {
@@ -161,7 +218,11 @@ export default {
             .then(res => {
                 if(res.data.code === "0"){
                     this.$message.success("成功");
-                    this.getData();
+                    if(this.parentId === ""){
+                        this.getData()
+                    }else{
+                        this.getDataSubs();
+                    }
                 } else {
                     this.$message.error(res.data.msg)
                 }
@@ -188,6 +249,10 @@ export default {
 <style scoped>
 .handle-box {
     margin-bottom: 20px;
+}
+
+.handle-box-inner {
+    margin-bottom: 10px;
 }
 
 .handle-select {
