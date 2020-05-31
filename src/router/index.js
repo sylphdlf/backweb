@@ -60,8 +60,13 @@ export default new Router({
                     meta: { title: '服务健康' }
                 },
                 {
-                    path: '/logMonitor',
-                    component: () => import(/* webpackChunkName: "logMonitor" */ '../components/page/server/ConfigMgr.vue'),
+                    path: '/crawler',
+                    component: () => import(/* webpackChunkName: "crawler" */ '../components/page/server/CrawlerMgr.vue'),
+                    meta: { title: '脚本控制' }
+                },
+                {
+                    path: '/monitor',
+                    component: () => import(/* webpackChunkName: "monitor" */ '../components/page/server/MonitorMgr.vue'),
                     meta: { title: '日志监控' }
                 },
                 {

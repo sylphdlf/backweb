@@ -109,8 +109,12 @@ export default {
                             title: '服务健康'
                         },
                         {
-                            index: 'logMonitor',
+                            index: 'monitor',
                             title: '日志监控'
+                        },
+                        {
+                            index: 'crawler',
+                            title: '爬虫控制'
                         },
                     ]
                 },
