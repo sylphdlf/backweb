@@ -23,10 +23,11 @@
                         <span>{{scope.row.createTime | dateTime}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="180" align="center">
+                <el-table-column label="操作" width="210" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-s-grid" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-s-grid" @click="handleInfo(scope.$index, scope.row)">子属性</el-button>
+                        <el-button type="text" icon="el-icon-refresh" @click="handleRefreshCache(scope.$index, scope.row)">刷新缓存</el-button>
 <!--                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
                     </template>
                 </el-table-column>
@@ -94,7 +95,9 @@ export default {
             urlSearch: "/dict/queryPage",
             urlType: "/user/getTypeMap",
             urlAddOrEdit: "/dict/addOrEdit",
+            urlRefreshCache: "/dict/refreshCache",
             query: {
+                id: '',
                 name: '',
                 pageIndex: 1,
                 pageSize: 10
@@ -207,6 +210,17 @@ export default {
             this.idx = index;
             this.form = row;
             this.editVisible = true;
+        },
+        handleRefreshCache(index, row){
+            this.$set(this.query, 'id', row.id);
+            this.$axios.post(this.$rootUrl + this.urlRefreshCache, this.query)
+                .then((res) => {
+                    if(res.data.code === "0"){
+                        this.$message.success('缓存已经更新');
+                    } else {
+                        this.$message.error('失败');
+                    }
+                });
         },
         // 保存编辑
         saveEdit() {
