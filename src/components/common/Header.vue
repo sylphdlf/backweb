@@ -49,14 +49,22 @@
     </div>
 </template>
 <script>
-import bus from '../common/bus';
-export default {
+    import bus from '../common/bus';
+    import Stomp from "stompjs";
+    import {MQ_PASSWORD, MQ_SERVICE, MQ_TOPIC, MQ_USERNAME} from "../../utils/mqConfig";
+    import innerMsg from '../page/comm/InnerMsg';
+
+    export default {
+    comments: {
+        innerMsg
+    },
     data() {
         return {
             collapse: false,
             fullscreen: false,
             name: 'linxin',
-            message: 2
+            message: '',
+            client: Stomp.client(MQ_SERVICE)
         };
     },
     computed: {
@@ -65,10 +73,13 @@ export default {
             return username ? username : this.name;
         }
     },
+    created() {
+        console.info(localStorage.getItem('mq_msg'));
+    },
     methods: {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
-            if (command == 'loginout') {
+            if (command === 'loginout') {
                 localStorage.removeItem('ms_username');
                 this.$router.push('/login');
             }
@@ -104,12 +115,40 @@ export default {
                 }
             }
             this.fullscreen = !this.fullscreen;
-        }
+        },
+        onConnected:function(){
+            //订阅的频道
+            this.client.subscribe(MQ_TOPIC,this.responseCallback,{ack: 'client'});
+        },
+        onFailed:function(msg){
+            console.log("MQ msg=>" + msg.body);
+        },
+        //成功时的回调函数
+        responseCallback:function(msg){
+            //接收消息的处理
+            const obj = JSON.parse(msg.body);
+            this.$parent.innerMsgList.push(msg)
+            console.log("MQ key=>" + obj.key);
+            console.log("MQ value=>" + obj.value);
+            // msg.ack();
+            this.message = this.$parent.innerMsgList.length;
+        },
+        //连接
+        connect:function(){
+            const headers = {
+                login: MQ_USERNAME,
+                password: MQ_PASSWORD,
+                duration: true,
+            };
+            this.client.connect(headers,this.onConnected,this.onFailed);
+            this.client.debug = null;
+        },
     },
     mounted() {
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
+        this.connect();
     }
 };
 </script>

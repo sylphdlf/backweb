@@ -71,8 +71,8 @@
                 <el-table-column type="index" width="55" align="center"/>
                 <el-table-column prop="name" label="名称"/>
                 <el-table-column prop="dictKey" label="键"/>
-                <el-table-column prop="dictValue" label="值"/>
-                <el-table-column prop="createTime" label="创建时间" >
+                <el-table-column prop="dictValue" width="100" label="值"/>
+                <el-table-column prop="createTime" width="150" label="创建时间" >
                     <template slot-scope="scope">
                         <span>{{scope.row.createTime | dateTime}}</span>
                     </template>

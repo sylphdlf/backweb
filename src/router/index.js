@@ -76,8 +76,8 @@ export default new Router({
                 },
                 {
                     path: '/tabs',
-                    component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
-                    meta: { title: 'tab选项卡' }
+                    component: () => import(/* webpackChunkName: "tabs" */ '../components/page/comm/InnerMsg.vue'),
+                    meta: { title: '站内信' }
                 },
                 {
                     path: '/form',

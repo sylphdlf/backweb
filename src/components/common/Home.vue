@@ -25,7 +25,8 @@ export default {
     data() {
         return {
             tagsList: [],
-            collapse: false
+            collapse: false,
+            innerMsgList: []
         };
     },
     components: {
