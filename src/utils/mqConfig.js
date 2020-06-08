@@ -1,5 +1,5 @@
 
-export const MQ_SERVICE = 'ws://127.0.0.1:15674/ws'
+export const MQ_SERVICE = 'ws://118.25.197.159:8888/ws'
 export const MQ_USERNAME = 'guest'
 export const MQ_PASSWORD = 'guest'
 export const MQ_TOPIC = 'mq_to_nodejs'
