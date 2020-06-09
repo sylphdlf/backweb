@@ -1,5 +1,5 @@
 
-export const MQ_SERVICE = 'wss://kitty163.com:1234/wss'
+export const MQ_SERVICE = 'wss://kitty163.com/wss'
 export const MQ_USERNAME = 'guest'
 export const MQ_PASSWORD = 'guest'
 export const MQ_TOPIC = 'mq_to_nodejs'
