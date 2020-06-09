@@ -23,7 +23,7 @@
                         </el-table-column>
                     </el-table>
                     <div class="handle-row">
-                        <el-button size="small" type="danger" @click.native.stop="handleExample()">模拟一个错误</el-button>
+                        <el-button size="small" type="danger" @click.native.stop="handleExample()">模拟一个404错误</el-button>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane :label="`保存的消息(${unread.length})`" name="second">
@@ -86,7 +86,7 @@
         <!-- 弹出框 -->
         <el-dialog :title="dialogTitle" :visible.sync="detailVisible" width="60%">
             <el-form>
-                <pre>
+                <pre style="width: 100%">
                     {{dialogContent}}
                 </pre>
             </el-form>
