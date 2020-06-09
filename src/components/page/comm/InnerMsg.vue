@@ -23,7 +23,7 @@
                         </el-table-column>
                     </el-table>
                     <div class="handle-row">
-                        <el-button size="small" type="danger">模拟一个错误</el-button>
+                        <el-button size="small" type="danger" @click.native.stop="handleExample()">模拟一个错误</el-button>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane :label="`保存的消息(${unread.length})`" name="second">
@@ -132,12 +132,16 @@
                 this.read = item.concat(this.read);
             },
             handleDetail(row, event, column) {
-                console.log(event)
                 const json = JSON.parse(row.body);
                 this.dialogTitle = json.key;
                 this.detailVisible = true;
                 this.dialogContent = json.value;
-                console.log(this.dialogContent)
+            },
+            handleExample(){
+                this.$axios.post(this.$rootUrl + "/aaa/bbb", {})
+                    .then(res => {
+
+                    });
             }
         },
         computed: {
