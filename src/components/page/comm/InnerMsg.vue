@@ -26,17 +26,17 @@
                         <el-button size="small" type="danger" @click.native.stop="handleExample()">模拟一个404错误</el-button>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :label="`保存的消息(${unread.length})`" name="second">
-                    <el-table :data="unread" :show-header="false" style="width: 100%" @row-click="handleDetail">
+                <el-tab-pane :label="`保存的消息(最近10条)`" name="second">
+                    <el-table :data="saved" :show-header="false" style="width: 100%" @row-click="handleDetail2">
                         <el-table-column>
                             <template slot-scope="scope">
-                                <span class="message-title">【{{JSON.parse(scope.row.body).key}}】{{JSON.parse(scope.row.body).value.substring(0, 150)}}</span>
+                                <span class="message-title">【{{scope.row.name}}】{{scope.row.content.substring(0, 150)}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="date" width="180"></el-table-column>
                         <el-table-column width="120">
                             <template slot-scope="scope">
-                                <el-button size="small" type="danger" @click.native.stop="handleSave(scope.$index)">删除</el-button>
+                                <el-button size="small" type="danger" @click.native.stop="handleDel(scope.$index)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -100,15 +100,32 @@
         name: 'tabs',
         data() {
             return {
+                urlSave: '/sysLog/save',
+                urlSearch: "/sysLog/queryPage",
+                urlDel: "/sysLog/del",
                 message: 'first',
                 showHeader: false,
                 unread: [],
+                saved: [],
                 detailVisible: false,
                 dialogTitle: '1212',
-                dialogContent: ''
+                dialogContent: '',
+                query: {
+                    pageIndex: 1
+                }
             }
         },
         methods: {
+            getData() {
+                this.$axios.post(this.$rootUrl + this.urlSearch, this.query)
+                    .then((res) => {
+                        if(res.data.code === "0"){
+                            this.saved = res.data.data.content;
+                        } else {
+                            this.$message.error('查询失败');
+                        }
+                    });
+            },
             handleRead(index) {
                 this.$confirm('标记后消息会丢失，确认标记已读？', '提示', {
                     type: 'warning'
@@ -121,11 +138,27 @@
             },
             handleSave(index) {
                 const item = this.unread.splice(index, 1);
-                this.read = item.concat(this.read);
+                const json = JSON.parse(item[0].body);
+                this.$axios.post(this.$rootUrl + this.urlSave, {name: json.key, content: json.value})
+                    .then(res => {
+                        if(res.data.code === "0"){
+                            this.$message.success('成功');
+                            item[0].ack();
+                            this.getData();
+                        }else {
+                            this.$message.error('失败');
+                        }
+                    });
             },
             handleDel(index) {
-                const item = this.read.splice(index, 1);
-                this.recycle = item.concat(this.recycle);
+                const item = this.saved.splice(index, 1);
+                this.$axios.post(this.$rootUrl + this.urlDel, {id: item[0].id})
+                    .then(res => {
+                        if(res.data.code === "0"){
+                            this.$message.success('成功');
+                            this.getData();
+                        }
+                    });
             },
             handleRestore(index) {
                 const item = this.recycle.splice(index, 1);
@@ -136,6 +169,11 @@
                 this.dialogTitle = json.key;
                 this.detailVisible = true;
                 this.dialogContent = json.value;
+            },
+            handleDetail2(row, event, column) {
+                this.dialogTitle = row.name;
+                this.detailVisible = true;
+                this.dialogContent = row.content;
             },
             handleExample(){
                 this.$axios.post(this.$rootUrl + "/aaa/bbb", {})
@@ -151,6 +189,7 @@
         },
         created() {
             this.unread = this.$parent.innerMsgList;
+            this.getData();
         }
     }
 

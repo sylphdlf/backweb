@@ -74,7 +74,7 @@
         }
     },
     created() {
-        console.info(localStorage.getItem('mq_msg'));
+        this.connect();
     },
     methods: {
         // 用户名下拉菜单选择事件
@@ -128,8 +128,6 @@
             //接收消息的处理
             const obj = JSON.parse(msg.body);
             this.$parent.innerMsgList.push(msg)
-            console.log("MQ key=>" + obj.key);
-            console.log("MQ value=>" + obj.value);
             // msg.ack();
             this.message = this.$parent.innerMsgList.length;
         },
@@ -148,8 +146,8 @@
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
-        this.connect();
     }
+
 };
 </script>
 <style scoped>

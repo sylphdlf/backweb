@@ -50,7 +50,7 @@
 
         <!-- 弹出框 -->
         <el-dialog :title="title" :visible.sync="dialogVisible" width="30%">
-            <el-upload class="upload-demo" drag :action="urlUpload" multiple>
+            <el-upload class="upload-demo" drag :action="urlUpload" multiple :on-success="getData">
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div class="el-upload__tip" slot="tip">文件大小不能超过200M</div>
@@ -68,6 +68,7 @@ export default {
             urlUpload: this.$rootUrl + "/file/upload",
             urlType: "/user/getTypeMap",
             urlAddOrEdit: "/user/addOrEdit",
+            urlDel: "/file/del",
             query: {
                 name: '',
                 pageIndex: 1,
@@ -122,10 +123,16 @@ export default {
                 type: 'warning'
             })
             .then(() => {
-                this.$message.success('删除成功');
-                this.tableData.splice(index, 1);
+                this.$axios.post(this.$rootUrl + this.urlDel, {id: row.id})
+                    .then((res) => {
+                        if(res.data.code === "0"){
+                            this.$message.success('成功');
+                            this.getData();
+                        } else {
+                            this.$message.error('查询失败');
+                        }
+                    });
             })
-            .catch(() => {});
         },
         delAllSelection() {
             const length = this.multipleSelection.length;
