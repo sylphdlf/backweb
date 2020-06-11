@@ -31,7 +31,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-lx-down" @click="handleEdit(scope.$index, scope.row)">下载</el-button>
+                        <el-button type="text" icon="el-icon-lx-down" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -69,6 +69,7 @@ export default {
             urlType: "/user/getTypeMap",
             urlAddOrEdit: "/user/addOrEdit",
             urlDel: "/file/del",
+            urlDownload: "/file/download",
             query: {
                 name: '',
                 pageIndex: 1,
@@ -129,10 +130,13 @@ export default {
                             this.$message.success('成功');
                             this.getData();
                         } else {
-                            this.$message.error('查询失败');
+                            this.$message.error('失败');
                         }
                     });
             })
+        },
+        handleDownload(index, row){
+            window.location.href=this.$rootUrl + this.urlDownload + "?id="+row.id
         },
         delAllSelection() {
             const length = this.multipleSelection.length;
