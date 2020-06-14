@@ -41,7 +41,7 @@
                         <a href="https://github.com/sylphdlf?tab=repositories" target="_blank">
                             <el-dropdown-item>项目仓库</el-dropdown-item>
                         </a>
-                        <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
+                        <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -60,11 +60,17 @@
     },
     data() {
         return {
+            urlLogout: '/logout',
             collapse: false,
             fullscreen: false,
             name: 'linxin',
             message: '',
-            client: Stomp.client(MQ_SERVICE)
+            client: Stomp.client(MQ_SERVICE),
+            headers: {
+                login: MQ_USERNAME,
+                password: MQ_PASSWORD,
+                duration: true,
+            }
         };
     },
     computed: {
@@ -79,9 +85,14 @@
     methods: {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
-            if (command === 'loginout') {
+            if (command === 'logout') {
                 localStorage.removeItem('ms_username');
-                this.$router.push('/login');
+                this.$axios.get(this.$rootUrl + this.urlLogout).then(res => {
+                    if(res.data.code === "0"){
+                        this.disConnect();
+                        this.$router.push('/login');
+                    }
+                });
             }
         },
         // 侧边栏折叠
@@ -121,7 +132,9 @@
             this.client.subscribe(MQ_TOPIC,this.responseCallback,{ack: 'client'});
         },
         onFailed:function(msg){
-            console.log("MQ msg=>" + msg.body);
+            if(null != msg){
+                console.log("MQ msg=>" + msg);
+            }
         },
         //成功时的回调函数
         responseCallback:function(msg){
@@ -138,9 +151,13 @@
                 password: MQ_PASSWORD,
                 duration: true,
             };
+            // this.client.debug = null;
+            // this.client.reconnect_delay = 3000;
             this.client.connect(headers,this.onConnected,this.onFailed);
-            this.client.debug = null;
         },
+        disConnect:function(){
+            this.client.disconnect(this.onFailed, this.headers);
+        }
     },
     mounted() {
         if (document.body.clientWidth < 1500) {
