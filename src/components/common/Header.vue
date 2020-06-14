@@ -151,7 +151,7 @@
                 password: MQ_PASSWORD,
                 duration: true,
             };
-            // this.client.debug = null;
+            this.client.debug = null;
             // this.client.reconnect_delay = 3000;
             this.client.connect(headers,this.onConnected,this.onFailed);
         },
