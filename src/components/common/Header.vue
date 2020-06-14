@@ -70,7 +70,8 @@
                 login: MQ_USERNAME,
                 password: MQ_PASSWORD,
                 duration: true,
-            }
+            },
+            showMsg: true
         };
     },
     computed: {
@@ -163,8 +164,18 @@
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
+    },
+    watch:{
+        message(val){
+            if(this.showMsg){
+                this.$message.success('您有新的消息');
+                this.showMsg = false;
+                setTimeout(() => {
+                    this.showMsg = true;
+                }, 3000);
+            }
+        }
     }
-
 };
 </script>
 <style scoped>
