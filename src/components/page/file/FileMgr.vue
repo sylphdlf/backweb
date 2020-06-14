@@ -21,7 +21,9 @@
                 <el-table-column prop="path" label="相对路径"/>
                 <el-table-column prop="size" label="文件大小">
                     <template slot-scope="scope">
-                        <span>{{Math.round(scope.row.size / 1000) + " K"}}</span>
+                        <span v-if="scope.row.size <= 1000">{{scope.row.size}}</span>
+                        <span v-if="scope.row.size > 1000 && scope.row.size <= 1000000">{{Math.round(scope.row.size / 1000) + " K"}}</span>
+                        <span v-if="scope.row.size > 1000000">{{(scope.row.size / 1000000).toFixed(2) + " M"}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" >
