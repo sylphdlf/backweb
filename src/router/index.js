@@ -16,7 +16,7 @@ export default new Router({
             children: [
                 {
                     path: '/dashboard',
-                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/comm/Dashboard.vue'),
                     meta: { title: '系统首页' }
                 },
                 {
