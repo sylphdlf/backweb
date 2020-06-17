@@ -12,11 +12,12 @@
                     </div>
                     <div class="user-info-list">
                         上次登录时间：
-                        <span>2019-11-01</span>
+                        <span>{{lastLoginTime | dateTime}}</span>
                     </div>
                     <div class="user-info-list">
                         上次登录地点：
-                        <span>东莞</span>
+                        <span v-if="lastIp==='127.0.0.1'">本地</span>
+                        <span v-else>{{lastIp}}</span>
                     </div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
@@ -112,11 +113,14 @@
 <script>
 import Schart from 'vue-schart';
 import bus from '../../common/bus';
+import moment from "moment";
 export default {
     name: 'dashboard',
     data() {
         return {
             name: localStorage.getItem('ms_username'),
+            lastIp: localStorage.getItem('ms_lastIp'),
+            lastLoginTime: parseInt(localStorage.getItem('ms_lastLoginTime')),
             todoList: [
                 {
                     title: '今天要修复100个bug',

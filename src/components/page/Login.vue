@@ -58,6 +58,8 @@ export default {
                         if(res.data.code === "0"){
                             this.$message.success('登录成功');
                             localStorage.setItem('ms_username', this.param.username);
+                            localStorage.setItem('ms_lastLoginTime', res.data.data.lastLoginTime);
+                            localStorage.setItem('ms_lastIp', res.data.data.lastIp);
                             this.$router.push('/');
                         } else {
                             this.$message.error('登陆失败，请稍后再试');
