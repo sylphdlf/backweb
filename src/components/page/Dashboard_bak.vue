@@ -4,7 +4,7 @@
             <el-col :span="8">
                 <el-card shadow="hover" class="mgb20" style="height:252px;">
                     <div class="user-info">
-                        <img src="../../../assets/img/img.jpg" class="user-avator" alt />
+                        <img src="../../assets/img/img.jpg" class="user-avator" alt />
                         <div class="user-info-cont">
                             <div class="user-info-name">{{name}}</div>
                             <div>{{role}}</div>
@@ -12,11 +12,11 @@
                     </div>
                     <div class="user-info-list">
                         上次登录时间：
-                        <span>{{lastLoginTime | dateTime}}</span>
+                        <span>2019-11-01</span>
                     </div>
                     <div class="user-info-list">
                         上次登录地点：
-                        <span>{{lastIp==='127.0.0.1' ? '本地' : lastLocation}}</span>
+                        <span>东莞</span>
                     </div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
@@ -47,7 +47,7 @@
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-lx-notice grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">{{this.$parent.innerMsgList.length}}</div>
+                                    <div class="grid-num">321</div>
                                     <div>系统消息</div>
                                 </div>
                             </div>
@@ -111,18 +111,12 @@
 
 <script>
 import Schart from 'vue-schart';
-import bus from '../../common/bus';
-import moment from "moment";
+import bus from '../common/bus';
 export default {
     name: 'dashboard',
     data() {
         return {
-            urlGetLocation: "/getLocation",
             name: localStorage.getItem('ms_username'),
-            lastIp: localStorage.getItem('ms_lastIp'),
-            lastLoginTime: parseInt(localStorage.getItem('ms_lastLoginTime')),
-            lastLocation: '',
-            lastCityCode: '',
             todoList: [
                 {
                     title: '今天要修复100个bug',
@@ -232,11 +226,10 @@ export default {
             return this.name === 'admin' ? '超级管理员' : '普通用户';
         }
     },
-    created() {
-        // this.handleListener();
-        // this.changeDate();
-        this.getLocation(this.lastIp)
-    },
+    // created() {
+    //     this.handleListener();
+    //     this.changeDate();
+    // },
     // activated() {
     //     this.handleListener();
     // },
@@ -245,23 +238,13 @@ export default {
     //     bus.$off('collapse', this.handleBus);
     // },
     methods: {
-        getLocation(ip){
-            if(ip !== '127.0.0.1'){
-                console.log(this.$pywebUrl + this.urlGetLocation + "?ip=" + ip)
-                this.$axios.get(this.$pywebUrl + this.urlGetLocation + "?ip=" + ip).then(res => {
-                    this.lastLocation = res.data.city;
-                    this.lastCityCode = res.data.adcode;
-                })
-            }
+        changeDate() {
+            const now = new Date().getTime();
+            this.data.forEach((item, index) => {
+                const date = new Date(now - (6 - index) * 86400000);
+                item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+            });
         }
-        // changeDate() {
-        //     const now = new Date().getTime();
-        //     this.data.forEach((item, index) => {
-        //         const date = new Date(now - (6 - index) * 86400000);
-        //         item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-        //         console.log(item.name)
-        //     });
-        // }
         // handleListener() {
         //     bus.$on('collapse', this.handleBus);
         //     // 调用renderChart方法对图表进行重新渲染

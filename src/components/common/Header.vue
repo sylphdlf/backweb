@@ -53,10 +53,12 @@
     import Stomp from "stompjs";
     import {MQ_PASSWORD, MQ_SERVICE, MQ_TOPIC, MQ_USERNAME} from "../../utils/mqConfig";
     import innerMsg from '../page/comm/InnerMsg';
+    import dashboard from '../page/comm/Dashboard';
 
     export default {
     comments: {
-        innerMsg
+        innerMsg,
+        dashboard
     },
     data() {
         return {

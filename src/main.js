@@ -18,8 +18,10 @@ Vue.use(ElementUI, {
     size: 'small'
 });
 Vue.prototype.$axios = axios;
-// Vue.prototype.$rootUrl = "http://dlf.cloud.com/webapi";
-Vue.prototype.$rootUrl = "https://www.kitty163.com/webapi";
+// const domain = "http://dlf.cloud.com";
+const domain = "https://www.kitty163.com";
+Vue.prototype.$rootUrl = domain + "/webapi";
+Vue.prototype.$pywebUrl = domain + "/pyweb";
 Vue.filter("dateTime", function (timeStamp, pattern = 'YYYY-MM-DD HH:mm:ss') {
     return moment(timeStamp).format(pattern);
 });

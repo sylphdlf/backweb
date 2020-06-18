@@ -17,7 +17,7 @@
                         <el-table-column prop="date" width="180"></el-table-column>
                         <el-table-column width="210">
                             <template slot-scope="scope">
-                                <el-button size="small" type="primary" @click.native.stop="handleSave(scope.$index)">保存消息</el-button>
+                                <el-button size="small" type="primary" v-if="scope.$index === 0" @click.native.stop="handleSave(scope.$index)">保存消息</el-button>
                                 <el-button size="small" v-if="scope.$index === 0" @click.native.stop="handleRead(scope.$index)">标为已读</el-button>
                             </template>
                         </el-table-column>
