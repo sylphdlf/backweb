@@ -21,12 +21,16 @@
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
-                        <span>语言详情</span>
-                    </div>Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
-                    <el-progress :percentage="13.7"></el-progress>HTML
-                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
+                        <span>当前天气</span>
+                    </div>
+
+                    <div class="tag-group">
+                        <el-tag effect="dark">{{this.lives.city}}</el-tag><br>
+                        <el-tag type="success" effect="dark">天气：{{this.lives.weather}}</el-tag><br>
+                        <el-tag effect="dark">温度：{{this.lives.temperature}} &#8451;</el-tag><br>
+                        <el-tag effect="dark">湿度：{{this.lives.humidity}}%</el-tag><br>
+                        <el-tag type="warning"effect="dark">更新时间：{{this.lives.reporttime}}</el-tag>
+                    </div>
                 </el-card>
             </el-col>
             <el-col :span="16">
@@ -117,12 +121,25 @@ export default {
     name: 'dashboard',
     data() {
         return {
-            urlGetLocation: "/getLocation",
+            urlCityAndWeather: "/cityAndWeather",
             name: localStorage.getItem('ms_username'),
-            lastIp: localStorage.getItem('ms_lastIp'),
+            // lastIp: localStorage.getItem('ms_lastIp'),
+            lastIp: "180.171.83.79",
+            // ip: localStorage.getItem('ms_ip'),
+            ip: '180.171.83.79',
             lastLoginTime: parseInt(localStorage.getItem('ms_lastLoginTime')),
             lastLocation: '',
             lastCityCode: '',
+            lives: {
+                city: '',
+                weather: '',
+                temperature: '',
+                winddirection: '',
+                windpower: '',
+                humidity: '',
+                reporttime: ''
+            },
+            forecasts: [],
             todoList: [
                 {
                     title: '今天要修复100个bug',
@@ -204,7 +221,7 @@ export default {
             options2: {
                 type: 'line',
                 title: {
-                    text: '最近几个月各品类销售趋势图'
+                    text: '未来几天气温趋势'
                 },
                 labels: ['6月', '7月', '8月', '9月', '10月'],
                 datasets: [
@@ -235,7 +252,7 @@ export default {
     created() {
         // this.handleListener();
         // this.changeDate();
-        this.getLocation(this.lastIp)
+        this.cityAndWeather(this.lastIp, this.ip)
     },
     // activated() {
     //     this.handleListener();
@@ -245,12 +262,12 @@ export default {
     //     bus.$off('collapse', this.handleBus);
     // },
     methods: {
-        getLocation(ip){
-            if(ip !== '127.0.0.1'){
-                console.log(this.$pywebUrl + this.urlGetLocation + "?ip=" + ip)
-                this.$axios.get(this.$pywebUrl + this.urlGetLocation + "?ip=" + ip).then(res => {
+        cityAndWeather(lastIp, ip){
+            if(lastIp !== '127.0.0.1'){
+                this.$axios.get(this.$pywebUrl + this.urlCityAndWeather + "?lastIp="+lastIp+"&ip="+ip).then(res => {
                     this.lastLocation = res.data.city;
-                    this.lastCityCode = res.data.adcode;
+                    this.lives = res.data.lives[0];
+                    this.forecasts = res.data.forecasts;
                 })
             }
         }
@@ -389,5 +406,10 @@ export default {
 .schart {
     width: 100%;
     height: 300px;
+}
+.tag-group span {
+    margin-right: 5px;
+    font-size: 14px;
+    margin-top: 5px;
 }
 </style>

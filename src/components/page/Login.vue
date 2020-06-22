@@ -60,6 +60,7 @@ export default {
                             localStorage.setItem('ms_username', this.param.username);
                             localStorage.setItem('ms_lastLoginTime', res.data.data.lastLoginTime);
                             localStorage.setItem('ms_lastIp', res.data.data.lastIp);
+                            localStorage.setItem('ms_ip', res.data.data.ip);
                             this.$router.push('/');
                         } else {
                             this.$message.error('登陆失败，请稍后再试');
