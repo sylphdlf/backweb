@@ -85,10 +85,10 @@ export default {
                             index: 'file',
                             title: '文件管理'
                         },
-                        {
-                            index: 'userFile',
-                            title: '用户文件管理'
-                        }
+                        // {
+                        //     index: 'userFile',
+                        //     title: '用户文件管理'
+                        // }
                     ]
                 },
                 {
@@ -113,8 +113,8 @@ export default {
                             title: '日志监控'
                         },
                         {
-                            index: 'crawler',
-                            title: '爬虫控制'
+                            index: 'script',
+                            title: '脚本控制'
                         },
                     ]
                 },

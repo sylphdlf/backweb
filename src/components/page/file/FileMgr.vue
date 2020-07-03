@@ -9,14 +9,14 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="文件名称" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="支持名称，格式查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="success" icon="el-icon-lx-add" @click="handleUpload">上传</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header" size="mini">
                 <el-table-column type="selection" width="55" align="center"/>
-                <el-table-column prop="orgName" label="原文件名" style="word-break: break-all"/>
-                <el-table-column prop="name" label="文件名"/>
+                <el-table-column prop="orgName" label="文件名" style="word-break: break-all"/>
+<!--                <el-table-column prop="name" label="文件名"/>-->
                 <el-table-column prop="suffix" label="格式"/>
                 <el-table-column prop="path" label="相对路径"/>
                 <el-table-column prop="size" label="文件大小">

@@ -60,8 +60,8 @@ export default new Router({
                     meta: { title: '服务健康' }
                 },
                 {
-                    path: '/crawler',
-                    component: () => import(/* webpackChunkName: "crawler" */ '../components/page/server/CrawlerMgr.vue'),
+                    path: '/script',
+                    component: () => import(/* webpackChunkName: "crawler" */ '../components/page/server/ScriptMgr.vue'),
                     meta: { title: '脚本控制' }
                 },
                 {

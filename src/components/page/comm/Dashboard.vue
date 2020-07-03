@@ -40,7 +40,7 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
+                                    <div class="grid-num">{{userCount}}</div>
                                     <div>用户访问量</div>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
             </el-col>
             <el-col :span="12">
                 <el-card shadow="hover">
-                    <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
+                    <schart ref="line" class="schart" canvasId="line" :options="accessMonitor"></schart>
                 </el-card>
             </el-col>
         </el-row>
@@ -115,21 +115,29 @@
 
 <script>
 import Schart from 'vue-schart';
+import Stomp from "stompjs";
+import {MQ_PASSWORD, MQ_SERVICE, MQ_TOPIC_ACCESS, MQ_USERNAME} from "../../../utils/mqConfig";
 import bus from '../../common/bus';
 import moment from "moment";
 export default {
     name: 'dashboard',
     data() {
         return {
+            client: Stomp.client(MQ_SERVICE),
+            headers: {
+                login: MQ_USERNAME,
+                password: MQ_PASSWORD,
+                duration: true,
+            },
             urlCityAndWeather: "/cityAndWeather",
+            urlAccessCount: "/user/getAccessCount",
             name: localStorage.getItem('ms_username'),
-            // lastIp: localStorage.getItem('ms_lastIp'),
-            lastIp: "180.171.83.79",
-            // ip: localStorage.getItem('ms_ip'),
-            ip: '180.171.83.79',
+            lastIp: localStorage.getItem('ms_lastIp'),
+            ip: localStorage.getItem('ms_ip'),
             lastLoginTime: parseInt(localStorage.getItem('ms_lastLoginTime')),
             lastLocation: '',
             lastCityCode: '',
+            userCount: '',
             lives: {
                 city: '',
                 weather: '',
@@ -218,25 +226,17 @@ export default {
                     }
                 ]
             },
-            options2: {
+            accessMonitor: {
                 type: 'line',
                 title: {
-                    text: '未来几天气温趋势'
+                    text: '服务器访问监控'
                 },
-                labels: ['6月', '7月', '8月', '9月', '10月'],
+                labels: [],
                 datasets: [
                     {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
+                        label: '访问次数',
+                        data: []
                     },
-                    {
-                        label: '百货',
-                        data: [164, 178, 150, 135, 160]
-                    },
-                    {
-                        label: '食品',
-                        data: [74, 118, 200, 235, 90]
-                    }
                 ]
             }
         };
@@ -252,7 +252,9 @@ export default {
     created() {
         // this.handleListener();
         // this.changeDate();
-        this.cityAndWeather(this.lastIp, this.ip)
+        this.cityAndWeather(this.lastIp, this.ip);
+        this.accessCount();
+        this.connect();
     },
     // activated() {
     //     this.handleListener();
@@ -263,6 +265,8 @@ export default {
     // },
     methods: {
         cityAndWeather(lastIp, ip){
+            lastIp = lastIp==='127.0.0.1'?'180.171.83.79':lastIp;
+            ip = ip==='127.0.0.1'?'180.171.83.79':ip;
             if(lastIp !== '127.0.0.1'){
                 this.$axios.get(this.$pywebUrl + this.urlCityAndWeather + "?lastIp="+lastIp+"&ip="+ip).then(res => {
                     this.lastLocation = res.data.city;
@@ -270,7 +274,12 @@ export default {
                     this.forecasts = res.data.forecasts;
                 })
             }
-        }
+        },
+        accessCount(){
+            this.$axios.post(this.$rootUrl + this.urlAccessCount, {}).then(res => {
+                this.userCount = res.data.msg;
+            })
+        },
         // changeDate() {
         //     const now = new Date().getTime();
         //     this.data.forEach((item, index) => {
@@ -293,6 +302,42 @@ export default {
         //     this.$refs.bar.renderChart();
         //     this.$refs.line.renderChart();
         // }
+        onConnected:function(){
+            //订阅的频道
+            this.client.subscribe(MQ_TOPIC_ACCESS,this.responseCallback,{ack: 'client'});
+        },
+        onFailed:function(msg){
+            if(null != msg){
+                console.log("MQ msg=>" + msg);
+            }
+        },
+        //成功时的回调函数
+        responseCallback:function(msg){
+            //接收消息的处理
+            const obj = JSON.parse(msg.body);
+            console.log(obj);
+            if(this.accessMonitor.labels.length > 10){
+                this.accessMonitor.labels.splice(0, 1);
+                this.accessMonitor.datasets[0].data.splice(0, 1);
+            }
+            this.accessMonitor.labels.push(obj.time);
+            this.accessMonitor.datasets[0].data.push(obj.count);
+            msg.ack();
+        },
+        //连接
+        connect:function(){
+            const headers = {
+                login: MQ_USERNAME,
+                password: MQ_PASSWORD,
+                duration: false,
+            };
+            this.client.debug = null;
+            // this.client.reconnect_delay = 3000;
+            this.client.connect(headers,this.onConnected,this.onFailed);
+        },
+        disConnect:function(){
+            this.client.disconnect(this.onFailed, this.headers);
+        }
     }
 };
 </script>
