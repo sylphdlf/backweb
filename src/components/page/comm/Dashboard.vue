@@ -231,11 +231,11 @@ export default {
                 title: {
                     text: '服务器访问监控'
                 },
-                labels: [],
+                labels: ['','','','','','','','',''],
                 datasets: [
                     {
                         label: '访问次数',
-                        data: []
+                        data: [0,0,0,0,0,0,0,0,0]
                     },
                 ]
             }
