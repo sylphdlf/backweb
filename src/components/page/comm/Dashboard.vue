@@ -315,7 +315,6 @@ export default {
         responseCallback:function(msg){
             //接收消息的处理
             const obj = JSON.parse(msg.body);
-            console.log(obj);
             if(this.accessMonitor.labels.length > 10){
                 this.accessMonitor.labels.splice(0, 1);
                 this.accessMonitor.datasets[0].data.splice(0, 1);
@@ -330,9 +329,10 @@ export default {
                 login: MQ_USERNAME,
                 password: MQ_PASSWORD,
                 duration: false,
+
             };
             this.client.debug = null;
-            // this.client.reconnect_delay = 3000;
+            this.client.reconnect_delay = 3000;
             this.client.connect(headers,this.onConnected,this.onFailed);
         },
         disConnect:function(){
